@@ -3,7 +3,7 @@ FROM alpine:latest
 
 # Install git, cron, and bash
 RUN apk update && \
-    apk add --no-cache git bash curl crond
+    apk add --no-cache git bash curl dcron
 
 # Set the working directory inside the container
 WORKDIR /app
