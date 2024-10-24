@@ -36,3 +36,4 @@ RUN echo "*/15 * * * * /bin/bash /app/update_repo.sh >> /var/log/cron.log 2>&1" 
 
 # Start cron and keep the container running
 CMD crond && tail -f /var/log/cron.log
+#
