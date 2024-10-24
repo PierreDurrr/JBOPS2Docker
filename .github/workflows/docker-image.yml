@@ -20,7 +20,7 @@ jobs:
           id: build-docker-image
           run: |
             ls -la 
-            docker build . -f Dockerfile -t pierredurrr/JBOPS2Docker-test:latest
+            docker build . -f Dockerfile -t pierredurrr/jbops2docker-test:latest
         - name: push the docker image
           id: push-docker-image
-          run: docker push ${{secrets.DOCKERHUB_USERNAME}}/demo-image-test:latest
+          run: docker push ${{secrets.DOCKERHUB_USERNAME}}/jbops2docker-test:latest
