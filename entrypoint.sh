@@ -12,6 +12,15 @@ else
   echo "/app already has contents. Skipping initialization."
 fi
 
+# Navigate to /app and verify if it's a valid Git repository
+cd /app
+if [ -d ".git" ]; then
+  echo "Confirmed: /app is a Git repository."
+else
+  echo "Error: /app is not a Git repository."
+  exit 1
+fi
+
 # Create a cron job to check for updates every 15 minutes
 echo "*/15 * * * * cd /app && git fetch origin && \
 LOCAL=$(git rev-parse @) && \
