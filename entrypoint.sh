@@ -14,8 +14,8 @@ if [ ! -d "/app/.git" ]; then
   # Clone JBOPS repository to the temporary directory
   git clone https://github.com/blacktwin/JBOPS.git $TEMP_DIR
 
-  # Copy contents to /app
-  cp -r $TEMP_DIR/* /app
+  # Copy all contents, including hidden files, to /app
+  cp -a $TEMP_DIR/. /app
   echo "Repository initialized in /app."
 else
   echo "JBOPS repository already initialized in /app."
