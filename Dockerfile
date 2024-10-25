@@ -5,18 +5,19 @@ FROM alpine:latest
 RUN apk update && \
     apk add --no-cache git bash openrc
 
-# Set the working directory
-WORKDIR /app
+# Clone JBOPS repository to a separate location
+RUN mkdir -p /jbops_repo && \
+    git clone https://github.com/blacktwin/JBOPS.git /jbops_repo
 
 # Copy entrypoint script to container
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Set environment variable for PLEXAPI to look for config.ini in /app
+# Environment variable for PLEXAPI to look for config.ini
 ENV PLEXAPI_CONFIG_PATH=/app/config/config.ini
 
-# Ensure cron log directory exists
+# Set cron log location
 RUN mkdir -p /var/log && touch /var/log/cron.log
 
-# Entrypoint script will handle cloning/updating and cron startup
+# Use entrypoint to handle mounting and cloning logic
 ENTRYPOINT ["/entrypoint.sh"]
