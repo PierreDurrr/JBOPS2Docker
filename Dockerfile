@@ -34,8 +34,8 @@ RUN chmod +x /app/update_repo.sh
 # Ensure the cron log directory and file exist
 RUN mkdir -p /var/log && touch /var/log/cron.log
 
-# Set up cron to run the update script every 15 minutes
-RUN echo "*/15 * * * * /bin/bash /app/update_repo.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
+# Set up dcron to run the update script every 15 minutes
+RUN echo "*/15 * * * * /bin/bash /app/update_repo.sh" > /etc/crontabs/root
 
-# Start dcron and keep the container running, tailing the cron log
-CMD crond -f -l 2 && tail -f /var/log/cron.log
+# Start dcron in the foreground and tail the log output to the console
+CMD dcron -f -l 2 && tail -f /var/log/cron.log
