@@ -1,21 +1,26 @@
 # Use a lightweight OS base image like Alpine Linux
 FROM alpine:latest
 
-# Install git, bash, and cron
+# Install necessary system packages
 RUN apk update && \
-    apk add --no-cache python3 py3-pip git bash openrc && \
-    pip3 install --upgrade pip && \
-    pip3 install plexapi
+    apk add --no-cache python3 py3-pip git bash openrc
 
-# Create the directory for mounting
-RUN mkdir -p /app
+# Create a virtual environment for Python packages
+RUN python3 -m venv /venv
+
+# Activate the virtual environment and install the plexapi package
+RUN . /venv/bin/activate && pip install plexapi
 
 # Copy entrypoint script to container
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Set environment variable for PLEXAPI to look for config.ini
-ENV PLEXAPI_CONFIG_PATH=/app/config/config.ini
+# Set environment variables
+ENV PATH="/venv/bin:$PATH" \
+    PLEXAPI_CONFIG_PATH=/app/config/config.ini
+
+# Ensure /app directory is available for cloning
+RUN mkdir -p /app
 
 # Use entrypoint to handle cloning logic
 ENTRYPOINT ["/entrypoint.sh"]
