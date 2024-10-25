@@ -24,6 +24,8 @@ else \
   echo \"No updates found.\"; \
 fi >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 
-# Start cron and tail log
+# Create log file and start cron
+touch /var/log/cron.log  # Ensure the log file exists
 echo "Starting cron and logging output..."
-crond -f -l 2 & tail -f /var/log/cron.log
+crond -f -l 2 &  # Start cron in the background
+tail -f /var/log/cron.log  # Show the cron log in the console
