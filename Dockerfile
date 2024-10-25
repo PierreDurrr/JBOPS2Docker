@@ -1,9 +1,9 @@
 # Use a lightweight OS base image like Alpine Linux
 FROM alpine:latest
 
-# Install git, dcron, and bash
+# Install git and the standard crond
 RUN apk update && \
-    apk add --no-cache git bash dcron
+    apk add --no-cache git bash openrc
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -34,8 +34,8 @@ RUN chmod +x /app/update_repo.sh
 # Ensure the cron log directory and file exist
 RUN mkdir -p /var/log && touch /var/log/cron.log
 
-# Set up dcron to run the update script every 15 minutes
-RUN echo "*/15 * * * * /bin/bash /app/update_repo.sh" > /etc/crontabs/root
+# Set up crond to run the update script every 15 minutes
+RUN echo "*/15 * * * * /bin/bash /app/update_repo.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 
-# Start dcron in the foreground and tail the log output to the console
-CMD ["sh", "-c", "dcron -f -l 2 & tail -f /var/log/cron.log"]
+# Start crond in the foreground and tail the log output to the console
+CMD ["sh", "-c", "crond -f -l 2 & tail -f /var/log/cron.log"]
