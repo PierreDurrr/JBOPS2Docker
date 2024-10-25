@@ -1,11 +1,24 @@
 #!/bin/sh
 
-# If /app is empty, clone the repository
-if [ -z "$(ls -A /app)" ]; then
-  echo "Initializing JBOPS repository..."
-  git clone https://github.com/blacktwin/JBOPS.git /app
+# Define a temporary directory for cloning
+TEMP_DIR="/tmp/jbops"
+
+# Check if /app is empty or missing .git directory, then clone if needed
+if [ ! -d "/app/.git" ]; then
+  echo "Initializing JBOPS repository in /app..."
+
+  # Clean up any previous temp clone
+  rm -rf $TEMP_DIR
+  mkdir -p $TEMP_DIR
+
+  # Clone JBOPS repository to the temporary directory
+  git clone https://github.com/blacktwin/JBOPS.git $TEMP_DIR
+
+  # Copy contents to /app
+  cp -r $TEMP_DIR/* /app
+  echo "Repository initialized in /app."
 else
-  echo "JBOPS repository already present, skipping clone."
+  echo "JBOPS repository already initialized in /app."
 fi
 
 # Create a cron job to check for updates every 15 minutes
