@@ -1,7 +1,7 @@
 # Use a lightweight OS base image like Alpine Linux
 FROM alpine:latest
 
-# Install git, cron, and bash
+# Install git, dcron, and bash
 RUN apk update && \
     apk add --no-cache git bash curl dcron
 
@@ -11,9 +11,8 @@ WORKDIR /app
 # Clone the repository during build
 RUN git clone https://github.com/blacktwin/JBOPS.git .
 
-# Create a symbolic link from the repository's config.ini to the expected plexapi config location
-RUN mkdir -p /root/.config/plexapi && \
-    ln -s /app/config.ini /root/.config/plexapi/config.ini
+# Set the environment variable for PLEXAPI to look for config.ini in the repo root
+ENV PLEXAPI_CONFIG_PATH=/app/config.ini
 
 # Create a script that will periodically check for updates
 RUN echo '#!/bin/bash\n\
@@ -38,5 +37,5 @@ RUN mkdir -p /var/log && touch /var/log/cron.log
 # Set up cron to run the update script every 15 minutes
 RUN echo "*/15 * * * * /bin/bash /app/update_repo.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 
-# Start cron and keep the container running, tailing the cron log
-CMD crond && tail -f /var/log/cron.log
+# Start dcron and keep the container running, tailing the cron log
+CMD crond -f -l 2 && tail -f /var/log/cron.log
