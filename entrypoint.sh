@@ -1,27 +1,17 @@
 #!/bin/sh
 
-# Define a temporary directory for cloning
-TEMP_DIR="/tmp/jbops"
-
-# Check if /app is empty or missing .git directory, then clone if needed
-if [ ! -d "/app/.git" ]; then
-  echo "Initializing JBOPS repository in /app..."
-
-  # Clean up any previous temp clone
-  rm -rf $TEMP_DIR
-  mkdir -p $TEMP_DIR
-
-  # Clone JBOPS repository to the temporary directory
-  git clone https://github.com/blacktwin/JBOPS.git $TEMP_DIR
-
+# Check if /app is empty; if so, populate it from /jbops_repo
+if [ -z "$(ls -A /app)" ]; then
+  echo "Populating /app with JBOPS repository contents..."
+  
   # Copy all contents, including hidden files, to /app
-  cp -a $TEMP_DIR/. /app
-  echo "Repository initialized in /app."
+  cp -a /jbops_repo/. /app
+  echo "Repository populated in /app."
 else
-  echo "JBOPS repository already initialized in /app."
+  echo "/app already has contents. Skipping initialization."
 fi
 
-# Create a cron job to check for updates every 15 minutes
+# Set up a cron job to check for updates every 15 minutes
 echo "*/15 * * * * cd /app && git fetch origin && \
 LOCAL=$(git rev-parse @) && \
 REMOTE=$(git rev-parse @{u}) && \
@@ -33,6 +23,6 @@ else \
   echo \"No updates found.\"; \
 fi >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 
-# Start cron and tail log
+# Start cron and output log to console
 echo "Starting cron and logging output..."
 crond -f -l 2 & tail -f /var/log/cron.log
