@@ -8,11 +8,14 @@ RUN apk update && \
 # Set the working directory inside the container
 WORKDIR /app
 
-# Clone the JBOPS repository
+# Clone the JBOPS repository into /app
 RUN git clone https://github.com/blacktwin/JBOPS.git .
 
-# Set the environment variable for PLEXAPI to look for config.ini in the repo root
-ENV PLEXAPI_CONFIG_PATH=/app/config.ini
+# Create a placeholder config directory within /app for mounting
+RUN mkdir -p /app/config
+
+# Set the environment variable for PLEXAPI to look for config.ini in /app/config
+ENV PLEXAPI_CONFIG_PATH=/app/config/config.ini
 
 # Create a script that will periodically check for updates
 RUN echo '#!/bin/bash\n\
