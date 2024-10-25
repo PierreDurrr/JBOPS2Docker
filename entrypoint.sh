@@ -1,17 +1,18 @@
 #!/bin/sh
 
-# Check if /app is empty; if so, populate it from /jbops_repo
-if [ -z "$(ls -A /app)" ]; then
-  echo "Populating /app with JBOPS repository contents..."
-  
-  # Copy all contents, including hidden files, to /app
-  cp -a /jbops_repo/. /app
-  echo "Repository populated in /app."
+# Check if /app is empty
+if [ ! "$(ls -A /app)" ]; then
+  echo "/app is empty. Cloning JBOPS repository..."
+
+  # Clone the JBOPS repository directly into /app
+  git clone https://github.com/blacktwin/JBOPS.git /app
+
+  echo "JBOPS repository has been cloned into /app."
 else
   echo "/app already has contents. Skipping initialization."
 fi
 
-# Set up a cron job to check for updates every 15 minutes
+# Create a cron job to check for updates every 15 minutes
 echo "*/15 * * * * cd /app && git fetch origin && \
 LOCAL=$(git rev-parse @) && \
 REMOTE=$(git rev-parse @{u}) && \
@@ -23,6 +24,6 @@ else \
   echo \"No updates found.\"; \
 fi >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 
-# Start cron and output log to console
+# Start cron and tail log
 echo "Starting cron and logging output..."
 crond -f -l 2 & tail -f /var/log/cron.log
