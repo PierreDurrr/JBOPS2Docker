@@ -3,7 +3,9 @@ FROM alpine:latest
 
 # Install git, bash, and cron
 RUN apk update && \
-    apk add --no-cache git bash openrc
+    apk add --no-cache python3 py3-pip git bash openrc && \
+    pip3 install --upgrade pip && \
+    pip3 install plexapi
 
 # Create the directory for mounting
 RUN mkdir -p /app
