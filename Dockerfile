@@ -5,7 +5,7 @@ FROM alpine:latest
 RUN apk update && \
     apk add --no-cache git bash openrc
 
-# Create the directories for mounting
+# Create the directory for mounting
 RUN mkdir -p /app
 
 # Copy entrypoint script to container
