@@ -8,7 +8,7 @@ docker-compose.yml example :
 version: '3'
 services:
   jbops:
-    build: .
+    image: pierredurrr/jbops2docker  # Pull the image from Docker Hub
     container_name: jbops2docker
     environment:
       - PLEXAPI_CONFIG_PATH=/app/config.ini  # Set the environment variable for plexapi
