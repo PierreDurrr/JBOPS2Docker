@@ -3,7 +3,7 @@ FROM alpine:latest
 
 # Install git, dcron, and bash
 RUN apk update && \
-    apk add --no-cache git bash curl dcron
+    apk add --no-cache git bash dcron
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -38,4 +38,4 @@ RUN mkdir -p /var/log && touch /var/log/cron.log
 RUN echo "*/15 * * * * /bin/bash /app/update_repo.sh" > /etc/crontabs/root
 
 # Start dcron in the foreground and tail the log output to the console
-CMD dcron -f -l 2 && tail -f /var/log/cron.log
+CMD ["sh", "-c", "dcron -f -l 2 & tail -f /var/log/cron.log"]
