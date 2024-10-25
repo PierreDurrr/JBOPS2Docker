@@ -1,5 +1,9 @@
 # JBOPS2Docker
 
+Lightweight dockerized version of [blacktwin's JBOPS scripts](https://github.com/blacktwin/JBOPS)
+
+docker-compose.yml example :
+
 ```yaml
 version: '3'
 services:
